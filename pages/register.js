@@ -72,7 +72,7 @@ const Register = () => {
           name="email"
           placeholder="zainal@gmail.com"
           value={form.values.email}
-          onChange={(e) => form.setFieldValue(e.target.value)}
+          onChange={form.handleChange}
         />
       </Form.Item>
 
@@ -89,7 +89,7 @@ const Register = () => {
         <Input.Password
           name="password"
           value={form.values.password}
-          onChange={(e) => form.setFieldValue(e.target.value)}
+          onChange={form.handleChange}
         />
       </Form.Item>
 
