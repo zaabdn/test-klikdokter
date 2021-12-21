@@ -39,3 +39,61 @@ export const apiGetProduct = async () => {
 
   return res;
 };
+
+export const apiGetProductBySku = async (data, token) => {
+  const uri = `${API_URL}/item/search`;
+  const res = await axios({
+    method: "POST",
+    url: uri,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data,
+  })
+    .then((res) => res.data)
+    .catch((err) => err?.response?.data || err);
+
+  return res;
+};
+
+export const apiAddProduct = async (data, token) => {
+  const uri = `${API_URL}/item/add`;
+  const res = await axios({
+    method: "POST",
+    url: uri,
+    headers: `Bearer ${token}`,
+    data,
+  })
+    .then((res) => res.data)
+    .catch((err) => err?.response?.data || err);
+
+  return res;
+};
+
+export const apiEditProduct = async (data, token) => {
+  const uri = `${API_URL}/item/update`;
+  const res = await axios({
+    method: "POST",
+    url: uri,
+    headers: `Bearer ${token}`,
+    data,
+  })
+    .then((res) => res.data)
+    .catch((err) => err?.response?.data || err);
+
+  return res;
+};
+
+export const apiDeleteProduct = async (data, token) => {
+  const uri = `${API_URL}/item/add`;
+  const res = await axios({
+    method: "POST",
+    url: uri,
+    headers: `Bearer ${token}`,
+    data,
+  })
+    .then((res) => res.data)
+    .catch((err) => err?.response?.data || err);
+
+  return res;
+};
