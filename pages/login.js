@@ -28,8 +28,8 @@ const Login = () => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const result = await apiLogin(values);
 
         if (result?.token) {
@@ -38,6 +38,7 @@ const Login = () => {
           setSubmitting(false);
         }
         setSubmitting(false);
+        setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
         setSubmitting(false);
