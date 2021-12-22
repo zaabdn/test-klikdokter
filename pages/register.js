@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Typography } from "antd";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,19 +8,27 @@ import * as Yup from "yup";
 import { apiRegister } from "../services/api";
 
 const Register = () => {
+  const { Text } = Typography;
+
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (data) => {
     await apiRegister(data)
       .then((res) => {
         const isSuccess = res.success;
+
         if (isSuccess) {
+          setErrorMessage("");
           router.push({
             pathname: "/login",
           });
+        } else {
+          setErrorMessage(res.email[0]);
         }
       })
-      .catch((err) => setError(err));
+      .catch((err) => setErrorMessage(err))
+      .finally(() => setIsLoading(false));
   };
 
   const form = useFormik({
@@ -87,6 +95,16 @@ const Register = () => {
           onChange={form.handleChange}
         />
       </Form.Item>
+      {errorMessage !== "" && (
+        <Form.Item
+          wrapperCol={{
+            offset: 7,
+            span: 10,
+          }}
+        >
+          <Text type="danger">{errorMessage}</Text>
+        </Form.Item>
+      )}
 
       <Form.Item
         wrapperCol={{

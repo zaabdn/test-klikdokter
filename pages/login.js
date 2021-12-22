@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Typography } from "antd";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,8 +12,12 @@ import Cookies from "js-cookie";
 import { apiLogin } from "../services/api";
 
 const Login = () => {
+  const { Text } = Typography;
+
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const form = useFormik({
     initialValues: {
@@ -30,9 +34,12 @@ const Login = () => {
         const result = await apiLogin(values);
 
         if (result?.token) {
+          setErrorMessage("");
           Cookies.set("token", result.token);
           router.push("/");
           setSubmitting(false);
+        } else {
+          setErrorMessage(result.error || result.email[0]);
         }
         setSubmitting(false);
         setIsLoading(false);
@@ -92,6 +99,17 @@ const Login = () => {
           onChange={form.handleChange}
         />
       </Form.Item>
+
+      {errorMessage !== "" && (
+        <Form.Item
+          wrapperCol={{
+            offset: 7,
+            span: 10,
+          }}
+        >
+          <Text type="danger">{errorMessage}</Text>
+        </Form.Item>
+      )}
 
       <Form.Item
         wrapperCol={{
