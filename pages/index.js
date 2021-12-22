@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, Button, Divider, Input } from "antd";
+import { Table, Button, Divider, Input, Typography } from "antd";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,12 +14,15 @@ import {
 import Cookies from "js-cookie";
 
 import ModalForm from "../components/modalForm";
+import ModalConfirm from "../components/modalConfirm";
 
 export default function Home() {
   const router = useRouter();
+  const { Search } = Input;
+  const { Title } = Typography;
   const [data, setData] = useState([]);
-  const [dataBySku, setDataBySku] = useState({});
-  const [sku, setSku] = useState("");
+  const [dataBySku, setDataBySku] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const isToken = Cookies.get("token");
   const [isModalVisible, setIsModalVisible] = useState({
@@ -31,17 +34,33 @@ export default function Home() {
   const handleGetProduct = async () => {
     try {
       const result = await apiGetProduct();
-      setData(result);
+      const results = result.map((row) => ({
+        key: row?.id,
+        ...row,
+      }));
+      setData(results);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleGetProductBySku = async () => {
+  const handleGetProductBySku = async (val) => {
     try {
-      const payload = { sku };
-      const result = await apiGetProductBySku(payload, isToken);
-      setDataBySku(result);
+      if (val.length < 1) {
+        setDataBySku([]);
+        setErrorMessage("");
+        handleGetProduct();
+      } else {
+        const payload = { sku: val };
+        const results = await apiGetProductBySku(payload, isToken);
+
+        if (results.success === false) {
+          setErrorMessage(results.message);
+        } else {
+          setErrorMessage("");
+          setDataBySku([results]);
+        }
+      }
     } catch (error) {
       console.log(error, "error");
     }
@@ -49,6 +68,18 @@ export default function Home() {
 
   const handleDeleteProduct = async () => {
     try {
+      const result = await apiDeleteProduct(
+        {
+          sku: isModalVisible.data,
+        },
+        isToken
+      );
+
+      if (result.message === false || result.error) {
+        setErrorMessage(result.message || result.error);
+      } else {
+        setIsModalVisible({ show: false });
+      }
     } catch (error) {}
   };
 
@@ -67,7 +98,7 @@ export default function Home() {
       title: "Action",
       key: "action",
       render: (value) => (
-        <span>
+        <span key={value?.id}>
           <Button
             type="link"
             onClick={() =>
@@ -80,7 +111,9 @@ export default function Home() {
           <Divider type="vertical" />
           <Button
             type="link"
-            onClick={() => console.log("hey")}
+            onClick={() =>
+              setIsModalVisible({ show: true, type: "delete", data: value?.id })
+            }
             disabled={!isToken}
             danger
           >
@@ -110,13 +143,13 @@ export default function Home() {
           justifyContent: "space-between",
         }}
       >
-        <Input
-          value={sku}
-          style={{ width: "50%" }}
-          onChange={(e) => setSku(e.target.value)}
-          disabled={!isToken}
-        />
-        <Button onClick={handleGetProductBySku}>Search</Button>
+        {isToken && (
+          <Search
+            placeholder="input search text"
+            onSearch={handleGetProductBySku}
+            style={{ width: "30%" }}
+          />
+        )}
         {!isToken ? (
           <div>
             <Link href="/register" passHref>
@@ -147,13 +180,33 @@ export default function Home() {
           </div>
         )}
       </div>
-      <Table dataSource={sku === "" ? data : dataBySku} columns={columns} />
-      {isModalVisible.show && (
+      {errorMessage === "" ? (
+        <Table
+          dataSource={dataBySku.length > 0 ? dataBySku : data}
+          columns={columns}
+        />
+      ) : (
+        <Title level={5}>{errorMessage}</Title>
+      )}
+
+      {isModalVisible.show && isModalVisible.type !== "delete" && (
         <ModalForm
           data={isModalVisible.data}
           visible={isModalVisible.show}
           type={isModalVisible.type}
           onCancel={() => setIsModalVisible({ show: !isModalVisible })}
+        />
+      )}
+
+      {isModalVisible.show && isModalVisible.type === "delete" && (
+        <ModalConfirm
+          visible={isModalVisible.show}
+          onClose={() => {
+            setErrorMessage("");
+            setIsModalVisible({ show: false });
+          }}
+          handleOk={handleDeleteProduct}
+          message={errorMessage}
         />
       )}
     </div>
