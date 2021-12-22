@@ -6,29 +6,30 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { apiRegister } from "../services/api";
+import { useRouter } from "next/router";
 
 const Register = () => {
+  const router = useRouter();
   const { Text } = Typography;
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (data) => {
-    await apiRegister(data)
-      .then((res) => {
-        const isSuccess = res.success;
+    try {
+      const result = await apiRegister(data);
+      console.log(result);
 
-        if (isSuccess) {
-          setErrorMessage("");
-          router.push({
-            pathname: "/login",
-          });
-        } else {
-          setErrorMessage(res.email[0]);
-        }
-      })
-      .catch((err) => setErrorMessage(err))
-      .finally(() => setIsLoading(false));
+      if (result.success) {
+        setErrorMessage("");
+        router.push("/login");
+      } else {
+        setErrorMessage(result.email[0]);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   const form = useFormik({
