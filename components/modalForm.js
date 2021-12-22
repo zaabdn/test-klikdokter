@@ -218,7 +218,7 @@ const ModalForm = ({ visible, data, onCancel, type }) => {
           />
         </Form.Item>
       </Form>
-      <Text type="danger">Error {errorMessage}</Text>
+      {errorMessage !== ""(<Text type="danger">Error {errorMessage}</Text>)}
     </Modal>
   );
 };
