@@ -18,8 +18,10 @@ import ModalConfirm from "../components/modalConfirm";
 
 export default function Home() {
   const router = useRouter();
+
   const { Search } = Input;
   const { Title } = Typography;
+
   const [data, setData] = useState([]);
   const [dataBySku, setDataBySku] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -68,14 +70,10 @@ export default function Home() {
 
   const handleDeleteProduct = async () => {
     try {
-      const result = await apiDeleteProduct(
-        {
-          sku: isModalVisible.data,
-        },
-        isToken
-      );
+      const payload = { sku: isModalVisible.data };
+      const result = await apiDeleteProduct(payload, isToken);
 
-      if (result.message === false || result.error) {
+      if (result.message === false) {
         setErrorMessage(result.message || result.error);
       } else {
         setIsModalVisible({ show: false });
@@ -112,7 +110,11 @@ export default function Home() {
           <Button
             type="link"
             onClick={() =>
-              setIsModalVisible({ show: true, type: "delete", data: value?.id })
+              setIsModalVisible({
+                show: true,
+                type: "delete",
+                data: value?.sku,
+              })
             }
             disabled={!isToken}
             danger
@@ -145,7 +147,7 @@ export default function Home() {
       >
         {isToken && (
           <Search
-            placeholder="input search text"
+            placeholder="input sku"
             onSearch={handleGetProductBySku}
             style={{ width: "30%" }}
           />
@@ -180,6 +182,7 @@ export default function Home() {
           </div>
         )}
       </div>
+
       {errorMessage === "" ? (
         <Table
           dataSource={dataBySku.length > 0 ? dataBySku : data}

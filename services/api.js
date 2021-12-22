@@ -89,7 +89,7 @@ export const apiEditProduct = async (data, token) => {
 };
 
 export const apiDeleteProduct = async (data, token) => {
-  const uri = `${API_URL}/item/add`;
+  const uri = `${API_URL}/item/delete`;
   const res = await axios({
     method: "POST",
     url: uri,
