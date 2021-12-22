@@ -18,7 +18,6 @@ const Register = () => {
   const handleSubmit = async (data) => {
     try {
       const result = await apiRegister(data);
-      console.log(result);
 
       if (result.success) {
         setErrorMessage("");
