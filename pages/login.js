@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 import { apiLogin } from "../services/api";
 
 const Login = () => {
-  const { Text } = Typography;
+  const { Title, Text } = Typography;
 
   const router = useRouter();
 
@@ -65,6 +65,15 @@ const Login = () => {
       }}
       autoComplete="off"
     >
+      <Form.Item
+        wrapperCol={{
+          offset: 7,
+          span: 10,
+        }}
+      >
+        <Title>Login</Title>
+      </Form.Item>
+
       <Form.Item
         label="Email"
         name="email"
