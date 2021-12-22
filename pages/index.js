@@ -22,11 +22,12 @@ export default function Home() {
   const { Search } = Input;
   const { Title } = Typography;
 
+  const isToken = Cookies.get("token");
+
   const [data, setData] = useState([]);
   const [dataBySku, setDataBySku] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const isToken = Cookies.get("token");
   const [isModalVisible, setIsModalVisible] = useState({
     show: false,
     data: undefined,
@@ -51,7 +52,7 @@ export default function Home() {
       if (val.length < 1) {
         setDataBySku([]);
         setErrorMessage("");
-        handleGetProduct();
+        await handleGetProduct();
       } else {
         const payload = { sku: val };
         const results = await apiGetProductBySku(payload, isToken);
@@ -64,7 +65,7 @@ export default function Home() {
         }
       }
     } catch (error) {
-      console.log(error, "error");
+      setErrorMessage(error);
     }
   };
 
@@ -78,7 +79,9 @@ export default function Home() {
       } else {
         setIsModalVisible({ show: false });
       }
-    } catch (error) {}
+    } catch (error) {
+      setErrorMessage(error);
+    }
   };
 
   const columns = [

@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 
-import { Form, Input, Button, Checkbox } from "antd";
-
-import { useRouter } from "next/router";
+import { Form, Input, Button } from "antd";
 
 import { useFormik } from "formik";
-
 import * as Yup from "yup";
 
 import { apiRegister } from "../services/api";
-
-import { simpleEncrypt } from "../utils/simpleEncryptDecrypt";
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);

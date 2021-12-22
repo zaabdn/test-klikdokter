@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 
-import { Form, Input, Button, Checkbox } from "antd";
+import { useRouter } from "next/router";
 
-import { Router, useRouter } from "next/router";
+import { Form, Input, Button } from "antd";
 
 import { useFormik } from "formik";
-
 import * as Yup from "yup";
 
 import Cookies from "js-cookie";
 
 import { apiLogin } from "../services/api";
-
-import { simpleEncrypt } from "../utils/simpleEncryptDecrypt";
 
 const Login = () => {
   const router = useRouter();

@@ -47,28 +47,32 @@ const ModalForm = ({ visible, data, onCancel, type }) => {
   const handleAdd = async (data) => {
     try {
       const result = await apiAddProduct(data, isToken);
+
       if (result.success === false) {
         setErrorMessage(result.message);
       } else {
+        setErrorMessage("");
         onCancel();
       }
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
 
   const handleEdit = async (data) => {
     try {
       const result = await apiEditProduct(data, isToken);
+
       if (result.success === false) {
         setErrorMessage(result.message);
       } else {
+        setErrorMessage("");
         onCancel();
       }
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
 
@@ -116,7 +120,7 @@ const ModalForm = ({ visible, data, onCancel, type }) => {
         >
           <Input
             name="sku"
-            // disabled={type === "edit"}
+            disabled={type === "edit"}
             value={form.values.sku}
             onChange={form.handleChange("sku")}
             onBlur={form.handleBlur("sku")}
@@ -218,7 +222,7 @@ const ModalForm = ({ visible, data, onCancel, type }) => {
           />
         </Form.Item>
       </Form>
-      {errorMessage !== ""(<Text type="danger">Error {errorMessage}</Text>)}
+      {errorMessage !== "" && <Text type="danger">Error {errorMessage}</Text>}
     </Modal>
   );
 };
