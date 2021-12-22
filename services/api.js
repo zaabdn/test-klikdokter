@@ -61,7 +61,9 @@ export const apiAddProduct = async (data, token) => {
   const res = await axios({
     method: "POST",
     url: uri,
-    headers: `Bearer ${token}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     data,
   })
     .then((res) => res.data)
@@ -75,7 +77,9 @@ export const apiEditProduct = async (data, token) => {
   const res = await axios({
     method: "POST",
     url: uri,
-    headers: `Bearer ${token}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     data,
   })
     .then((res) => res.data)
@@ -89,7 +93,9 @@ export const apiDeleteProduct = async (data, token) => {
   const res = await axios({
     method: "POST",
     url: uri,
-    headers: `Bearer ${token}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     data,
   })
     .then((res) => res.data)
